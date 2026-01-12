@@ -1,3 +1,5 @@
+// ====== Setup & Imports ======
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -5,11 +7,9 @@ const app = express();
 app.use(express.json());
 
 // ====== MongoDB Connection ======
-mongoose.connect('mongodb+srv://ayatsdr7_db_user:q63rKaghOx5yDgj9@cluster0.g5lllzs.mongodb.net/researchDB?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
-
-// =================================
 
 // ====== Mongoose Schema ======
 const userSchema = new mongoose.Schema({
@@ -108,6 +108,6 @@ app.put('/users/:id', async (req, res) => {
     }
 });
 
-// شغلي السيرفر على بورت 3000
-const PORT = 3000;
+// ====== Start Server ======
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
