@@ -1,10 +1,13 @@
 // ====== Setup & Imports ======
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose');// حتى اقدر اتعمل مع mongodb بسهولة
 
 const app = express();
-app.use(express.json());
+app.use(express.json());// عشان يقدر يقرأ json من الريكوست
+
+const cors = require('cors');//  للسماح بالطلبات من الدومينات المختلفة سواء الفرونت اند او غيرها
+app.use(cors());
 
 // ====== MongoDB Connection ======
 mongoose.connect(process.env.MONGO_URI)
