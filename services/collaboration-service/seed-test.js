@@ -31,11 +31,12 @@ async function seedData() {
   }
 
   // إنشاء علاقات جاهزة
-  await relationCrud.createRelation('Researcher', 'R1', 'Project', 'P1', 'WORKS_ON');
-  await relationCrud.createRelation('Researcher', 'R2', 'Project', 'P2', 'WORKS_ON');
+  await relationCrud.createResearcherProjectRelation('R1', 'P1', 'WORKS_ON');
+  await relationCrud.createResearcherProjectRelation('R2', 'P2', 'WORKS_ON');
 
   console.log('Seed data created successfully.');
 }
 
 seedData();
+
 
