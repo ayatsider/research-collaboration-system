@@ -1,24 +1,17 @@
-import { loginUser, getUserFromSession, logoutUser, isLoggedIn } from './session.js';
+// services/session/test-session.js
+import { loginUser, getUserFromSession } from './session.js';
 
-(async () => {
-    // مستخدم وهمي
-    const user = { id: 1, name: 'Alice', email: 'alice@example.com' };
+async function test() {
+  const user = { id: 'R1', name: 'Eman' };
 
-    // تسجيل دخول
-    const sessionId = await loginUser(user);
-    console.log('Session ID:', sessionId);
+  const sessionId = await loginUser(user);
+  console.log('Session ID:', sessionId);
 
-    // التحقق من وجود session
-    const loggedIn = await isLoggedIn(sessionId);
-    console.log('Is logged in?', loggedIn);
+  const storedUser = await getUserFromSession(sessionId);
+  console.log('Stored user:', storedUser);
+}
 
-    // استرجاع بيانات المستخدم
-    const userData = await getUserFromSession(sessionId);
-    console.log('User data:', userData);
+test();
 
-    // تسجيل خروج
-    await logoutUser(sessionId);
-    const loggedInAfterLogout = await isLoggedIn(sessionId);
-    console.log('Is logged in after logout?', loggedInAfterLogout);
-})();
+
 
