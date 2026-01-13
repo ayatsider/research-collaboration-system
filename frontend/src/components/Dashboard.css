@@ -1,0 +1,153 @@
+/* ===== Global ===== */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+  color: #1f2937;
+}
+
+/* ===== Layout ===== */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+  width: 260px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(14px);
+  padding: 30px 22px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 45px;
+  color: #1f2937;
+}
+
+/* Navigation */
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #374151;
+  transition: all 0.25s ease;
+}
+
+.sidebar li:hover {
+  background: #e0e7ff;
+}
+
+.sidebar li.active {
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 45px;
+}
+
+.main-content h1 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin-bottom: 35px;
+}
+
+/* ===== Cards ===== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 26px;
+  margin-bottom: 35px;
+}
+
+/* ===== Card ===== */
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 26px;
+  border-radius: 22px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
+}
+
+.card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #374151;
+}
+
+.card p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===== Lists ===== */
+.card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card li {
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 0.95rem;
+}
+
+/* ===== Inputs ===== */
+input {
+  width: 100%;
+  padding: 13px 15px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+/* ===== Buttons ===== */
+button {
+  padding: 13px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  color: white;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}

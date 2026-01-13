@@ -1,12 +1,10 @@
-// ====== Setup & Imports ======
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');// حتى اقدر اتعمل مع mongodb بسهولة
+const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
-app.use(express.json());// عشان يقدر يقرأ json من الريكوست
-
-const cors = require('cors');//  للسماح بالطلبات من الدومينات المختلفة سواء الفرونت اند او غيرها
+app.use(express.json());
 app.use(cors());
 
 // ====== MongoDB Connection ======
@@ -25,8 +23,8 @@ const User = mongoose.model('User', userSchema);
 
 // ====== Routes ======
 
-// Create User API
-app.post('/users', async (req, res) => {
+// 1️⃣ Register User
+app.post('/users/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
         if (!name || !email || !password) {
@@ -39,13 +37,29 @@ app.post('/users', async (req, res) => {
         }
 
         const newUser = await User.create({ name, email, password });
-        res.status(201).json({ message: 'User created successfully', user: newUser });
+        res.status(201).json({ message: 'User registered successfully', user: newUser });
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 
-// GET all users
+// Login User
+app.post('/users/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email, password });
+    if (!user) return res.status(401).json({ message: 'Invalid email or password' });
+
+    res.status(200).json({
+      message: 'Login successful',
+      user: { id: user._id, name: user.name, email: user.email }
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+// 3️⃣ GET all users
 app.get('/users', async (req, res) => {
     try {
         const users = await User.find();
@@ -55,7 +69,7 @@ app.get('/users', async (req, res) => {
     }
 });
 
-// GET user by ID
+// 4️⃣ GET user by ID
 app.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -66,23 +80,22 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-// Login
-app.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email, password });
-        if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
-        res.status(200).json({
-            message: 'Login successful',
-            user: { id: user._id, name: user.name, email: user.email }
-        });
-    } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-    }
-});
+// GET researchers by name search
+// app.get("/researchers", async (req, res) => {
+//   try {
+//     const search = req.query.search || "";
+//     const regex = new RegExp(search, "i");
+//     const researchers = await User.find({ name: regex });
+//     res.json(researchers);
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// });
 
-// Delete user by ID
+
+
+// 5️⃣ Delete user by ID
 app.delete('/users/:id', async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
@@ -93,7 +106,7 @@ app.delete('/users/:id', async (req, res) => {
     }
 });
 
-// Update user by ID
+// 6️⃣ Update user by ID
 app.put('/users/:id', async (req, res) => {
     try {
         const { name, email, password } = req.body;
