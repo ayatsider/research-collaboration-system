@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function CreateProject({ user, users, onProjectCreated }) {
+export default function CreateProject({ user, onProjectCreated }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [researchers, setResearchers] = useState([]);
   const [selectedResearchers, setSelectedResearchers] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  // جلب الباحثين من Users backend
+  useEffect(() => {
+    async function fetchResearchers() {
+      try {
+        const res = await axios.get("http://localhost:3000/users"); // جلب كل الباحثين
+        setResearchers(res.data);
+      } catch (err) {
+        console.error("Error fetching researchers:", err);
+      }
+    }
+    fetchResearchers();
+  }, []);
+
+  // إنشاء مشروع جديد
   const handleCreateProject = async () => {
     if (!title || !description || selectedResearchers.length === 0 || !startDate || !endDate) {
       alert("Please fill all fields");
@@ -20,11 +35,11 @@ export default function CreateProject({ user, users, onProjectCreated }) {
         description,
         researchers: selectedResearchers,
         startDate,
-        endDate,
+        endDate
       });
 
       alert("Project created successfully!");
-      onProjectCreated(res.data.project);
+      onProjectCreated(res.data.project); // تحديث قائمة المشاريع في الصفحة الرئيسية
 
       // إعادة تعيين الحقول
       setTitle("");
@@ -65,8 +80,8 @@ export default function CreateProject({ user, users, onProjectCreated }) {
         }
         style={{ marginBottom: "10px", width: "100%", padding: "8px" }}
       >
-        {users.map(u => (
-          <option key={u._id} value={u._id}>{u.name}</option>
+        {researchers.map((r) => (
+          <option key={r._id} value={r._id}>{r.name}</option>
         ))}
       </select>
 
@@ -84,7 +99,9 @@ export default function CreateProject({ user, users, onProjectCreated }) {
         style={{ marginBottom: "10px", width: "48%", padding: "8px" }}
       />
 
-      <button onClick={handleCreateProject} style={{ padding: "10px 20px" }}>Create Project</button>
+      <button onClick={handleCreateProject} style={{ padding: "10px 20px" }}>
+        Create Project
+      </button>
     </div>
   );
 }

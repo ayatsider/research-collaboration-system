@@ -15,36 +15,59 @@ export default function Register() {
     }
 
     try {
+      // registerUser تستخدم fetch وترجع JSON مباشر
       const res = await registerUser({ name, email, password });
-      alert(res.data.message); // مثلا "User registered successfully"
-      navigate("/login"); // بعد التسجيل يروح لتسجيل الدخول
+
+      alert(res.message); // ✅ بدون res.data
+      navigate("/login"); // تحويل لصفحة تسجيل الدخول
     } catch (err) {
-      alert(err.response?.data?.message || "Registration failed");
-    }
+  console.log("ERROR FULL:", err);
+  console.log("RESPONSE:", err.response);
+  alert("This email is already registered.");
+}
+
   };
 
   return (
-    <div className="card" style={{ maxWidth: 400, margin: "80px auto" }}>
+    <div className="card" style={{ maxWidth: 400, margin: "80px auto", padding: "20px" }}>
       <h2>Register</h2>
 
       <input
         placeholder="Name"
         value={name}
         onChange={e => setName(e.target.value)}
+        style={{ marginBottom: "10px", width: "100%", padding: "8px" }}
       />
+
       <input
         placeholder="Email"
         value={email}
         onChange={e => setEmail(e.target.value)}
+        style={{ marginBottom: "10px", width: "100%", padding: "8px" }}
       />
+
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={e => setPassword(e.target.value)}
+        style={{ marginBottom: "15px", width: "100%", padding: "8px" }}
       />
 
-      <button onClick={handleRegister}>Register</button>
+      <button
+        onClick={handleRegister}
+        style={{
+          width: "100%",
+          padding: "10px",
+          background: "#2563eb",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer"
+        }}
+      >
+        Register
+      </button>
     </div>
   );
 }

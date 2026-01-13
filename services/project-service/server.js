@@ -72,6 +72,23 @@ app.delete('/projects/:id', async (req, res) => {
   }
 });
 
+app.post('/projects', async (req, res) => {
+  let { title, description, researchers, startDate, endDate, currentUser } = req.body;
+
+  // إضافة المستخدم الحالي تلقائيًا إذا لم يختار أي باحث
+  if (!researchers || !researchers.length) {
+    researchers = [currentUser];
+  }
+
+  try {
+    const newProject = await Project.create({ title, description, researchers, startDate, endDate });
+    res.status(201).json({ message: 'Project created successfully', project: newProject });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+});
+
+
 
 // Start server
 const PORT = process.env.PORT || 3001;
