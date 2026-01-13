@@ -1,3 +1,4 @@
+// redis.js
 import { createClient } from 'redis';
 
 const redisClient = createClient({
@@ -5,5 +6,8 @@ const redisClient = createClient({
 });
 
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
+
+// نفتح الاتصال مرة واحدة عند استيراد الملف
+await redisClient.connect();
 
 export default redisClient;
