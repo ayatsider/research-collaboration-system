@@ -1,95 +1,77 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('Connected to MongoDB - Project Service'))
-    .catch(err => console.error('MongoDB connection error:', err));
+// ================= MongoDB =================
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB - Project Service"))
+  .catch((err) => console.error(err));
 
-// Mongoose schema
-const projectSchema = new mongoose.Schema({
+// ================= Schemas =================
+
+// Publication Schema
+const publicationSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  abstract: String,
+  journal: String,
+  year: Number,
+});
+
+// Project Schema
+const projectSchema = new mongoose.Schema(
+  {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    researchers: [{ type: String }], // IDs of researchers
+    researchers: [{ type: String, required: true }],
     startDate: { type: Date },
-    endDate: { type: Date }
-}, { timestamps: true });
+    endDate: { type: Date },
+    publications: [publicationSchema],
+  },
+  { timestamps: true }
+);
 
-const Project = mongoose.model('Project', projectSchema);
+const Project = mongoose.model("Project", projectSchema);
 
-// Routes
+// ================= Routes =================
 
-// Create Project
-app.post('/projects', async (req, res) => {
-    const { title, description, researchers, startDate, endDate } = req.body;
-    try {
-        const newProject = await Project.create({ title, description, researchers, startDate, endDate });
-        res.status(201).json({ message: 'Project created successfully', project: newProject });
-    } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-    }
-});
-
-// GET all projects
-app.get('/projects', async (req, res) => {
-    try {
-        const projects = await Project.find();
-        res.status(200).json(projects);
-    } catch (err) {
-        res.status(500).json({ message: 'Server error', error: err.message });
-    }
-});
-
-// GET projects count
-app.get("/projects/count", async (req, res) => {
+// Create Project + Publications
+app.post("/projects", async (req, res) => {
   try {
-    const count = await Project.countDocuments();
-    res.json({ totalProjects: count });
+    const project = await Project.create(req.body);
+    res.status(201).json(project);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-// DELETE project by id
-app.delete('/projects/:id', async (req, res) => {
+// Get All Projects
+app.get("/projects", async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Project.findByIdAndDelete(id); // حذف المشروع من MongoDB
-    if (!deleted) return res.status(404).json({ message: "Project not found" });
-
-    res.json({ message: "Project deleted successfully" });
+    const projects = await Project.find();
+    res.json(projects);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to delete project" });
+    res.status(500).json({ error: err.message });
   }
 });
 
-app.post('/projects', async (req, res) => {
-  let { title, description, researchers, startDate, endDate, currentUser } = req.body;
-
-  // إضافة المستخدم الحالي تلقائيًا إذا لم يختار أي باحث
-  if (!researchers || !researchers.length) {
-    researchers = [currentUser];
-  }
-
+// Delete Project
+app.delete("/projects/:id", async (req, res) => {
   try {
-    const newProject = await Project.create({ title, description, researchers, startDate, endDate });
-    res.status(201).json({ message: 'Project created successfully', project: newProject });
+    await Project.findByIdAndDelete(req.params.id);
+    res.json({ message: "Project deleted" });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
-
-
-// Start server
+// ================= Server =================
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Project Service running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Project Service running on port ${PORT}`)
+);
